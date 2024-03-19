@@ -25,7 +25,7 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;//← 한명의 회원은 여러 번 주문을 할 수 있으므로 주문 엔티티 기준에서 다대일 단방향 매핑을 함
 
@@ -42,7 +42,8 @@ public class Order {
     //↓ 즉 연관 관계의 주인의 필드인 order를 mapperBy의 값으로 세팅했습니다.
     //↓ 부모 엔티티의 영속성 상태 변화를 자식 엔티티에 모두 전이하는 CasecadeType.All 옵션을 설정하였습니다.
     //↓ 고아 객체 제거를 사용하기 위해서 @OneToMany 어노테이션에서 "orphanRemoval=true"옵션을 사용하면 됩니다.
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+
     //↓ 하나의 주문이 여러개의 주문 상품을 갖으므로 List 자료형을 사용해서 매핑합니다.
     private List<OrderItem> orderItems = new ArrayList<>();
 
