@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <!--spring security 태그를 사용하기 위해 네임스페이스 추가-->
 
 <div th:fragment="header">
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -12,22 +13,27 @@
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
       <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-        <li class="nav-item">
+        <!--관계자 계정으로 로그인한 경우 상품 등록, 상품관리 메뉴를 보여줌-->
+        <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
           <a class="nav-link" href="/admin/item/new">상품 등록</a>
         </li>
-        <li class="nav-item">
+        <!--관계자 계정으로 로그인한 경우 상품 등록, 상품관리 메뉴를 보여줌-->
+        <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
           <a class="nav-link" href="/admin/items">상품 관리</a>
         </li>
-        <li class="nav-item">
+        <!--사용자 계정으로 로그인 할 시 장바구니, 구매이력 보여줌-->
+        <!--단 sec:authorize="isAuthenticated()" 사용해서 로그인(인증) 시에만 보이는 메뉴로 바꿀 수 있음-->
+        <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_USER')" >
           <a class="nav-link" href="#">장바구니</a>
         </li>
-        <li class="nav-item">
+        <!--사용자 계정으로 로그인 할 시 장바구니, 구매이력 보여줌-->
+        <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_USER')">
           <a class="nav-link" href="#">구매이력</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="isAnonymous()">
           <a class="nav-link" href="/members/login">로그인</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="isAuthenticated()">
           <a class="nav-link" href="/members/logout">로그아웃</a>
         </li>
       </ul>

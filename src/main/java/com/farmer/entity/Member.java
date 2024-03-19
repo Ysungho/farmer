@@ -45,7 +45,7 @@ public class Member{
         //↓스프링 시큐리티 설정 클래스에 등록한 BCryptPasswordEncoder Bean을 파라미터로 넘겨서 비밀번호를 암호화 합니다.
         String password = passwordEncoder.encode(memberFormDto.getPassword());
         member.setPassword(password);
-        member.setRole(Role.ADMIN);//Member 엔티티 생성 시 Admin Role로 생성하도록 만듬,, 만약 해제하고 싶다면 Role.USER로 바꾸면 됨.
+        member.setRole(Role.ADMIN);//Member 엔티티 생성 시 기본으로 Admin Role로 생성하도록 만듬,, 만약 해제하고 싶다면 Role.USER로 바꾸면 됨.
         return member;
     }
 
