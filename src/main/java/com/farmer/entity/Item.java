@@ -12,6 +12,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import com.farmer.dto.ItemFormDto;
+
 @Entity//Item 클래스를 entity 선언합니다. 또한 @Table 어노테이션을 통해 어떤 테이블과 매핑될지 지정합니다.
 @Table(name="item")//Item 테이블과 매핑되도록 name을 Item으로 지정합니다.
 @Getter
@@ -43,5 +45,13 @@ public class Item extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus; //상품 판매 상태
+
+    public void updateItem(ItemFormDto itemFormDto) {
+        this.itemNm = itemFormDto.getItemNm();
+        this.price = itemFormDto.getPrice();
+        this.stockNumber = itemFormDto.getStockNumber();
+        this.itemDetail = itemFormDto.getItemDetail();
+        this.itemSellStatus = itemFormDto.getItemSellStatus();
+    }
 
 }
