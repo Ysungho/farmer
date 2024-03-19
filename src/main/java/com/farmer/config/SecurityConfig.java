@@ -35,6 +35,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))//← 로그아웃 url 설정
                 .logoutSuccessUrl("/")//← 로그아웃 성공 시 이동할 url 설정
         ;
+
+        http.authorizeRequests()// ← 시큐리티 처리에 HttpServiceRequest를 이용한다는 것을 의미
+                //↓ permitAll()을 통해 모든 사용자가 인증 없이 해당 경로에 접글할 수 있도록 설정
+                //↓ 메인페이지, 회원관련 url, 상품상세페이지, 상품 이미지 불러오는 경로가 해당
+                .mvcMatchers("/", "/members/**", "/item/**", "/images/**").permitAll()
+                .mvcMatchers("/admin/**").hasRole("ADMIN")//← admin으로 시작하는 경로는 해당 계정이 Admin Role일 경우에만 접근가능하도록 설정
+                .anyRequest().authenticated()//← 설정한 경로를 제외한 나머지 경로는 모두 인증을 요구하도록 설정
+        ;
+
+        http.exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())// ← 인증되지 않은 사용자가 리소스에 접근하였을 때 수행되는 핸들러를 등록
+        ;
     }
 
     @Bean
@@ -50,5 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(memberService)
                 .passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/resources/**", "/error");//← static 디렉터리의 하위 파일은 인증을 무시하도록 설정
     }
 }
