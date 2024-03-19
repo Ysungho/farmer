@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 
-public class Item {
+public class Item extends BaseEntity{
+
     @Id//entity로 선언한 클래스는 반드시 기본키를 가져야 합니다. 기본키가 되는 멤버 변수에 @Id 어노테이션을 붙여줍니다.
     @Column(name="item_id")
     //테이블에 매핑되는 칼럼의 이름을 @Column 어노테이션을 통해 설정해 줍니다. item 클래스의 id 변수와 item 테이블의 item_id컬럼이 매핑되도록 합니다.
@@ -43,7 +44,4 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus; //상품 판매 상태
 
-    private LocalDateTime regTime; //등록 시간
-
-    private LocalDateTime updateTime; //수정 시간
 }

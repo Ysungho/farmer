@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 
-public class Order {
+public class Order extends BaseEntity{
 
     @Id
     @GeneratedValue
@@ -46,11 +46,6 @@ public class Order {
 
     //↓ 하나의 주문이 여러개의 주문 상품을 갖으므로 List 자료형을 사용해서 매핑합니다.
     private List<OrderItem> orderItems = new ArrayList<>();
-
-    private LocalDateTime regTime;
-
-    private LocalDateTime updateTime;
-
 
 
 }

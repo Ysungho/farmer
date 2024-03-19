@@ -1,5 +1,9 @@
 package com.farmer.entity;
 /* 장바구니 아이템 */
+/*
+ *장바구니에는 고객이 관심이 있거나 나중에 사려는 상품을 담습니다.
+ *하나의 장바구니에는 여러 개의 상품들이 들어갈 수 있습니다. 또한 같은 상품을 여러 개 주문할 수 도 있으므로 몇 개를 담아줄 것인지도 설정해 주어야 합니다.
+ */
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +15,7 @@ import javax.persistence.*;
 @Setter
 @Table(name = "cart_item")
 
-public class CartItem {
+public class CartItem extends BaseEntity{
 
     @Id
     @GeneratedValue

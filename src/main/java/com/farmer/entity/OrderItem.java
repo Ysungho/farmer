@@ -1,6 +1,7 @@
 package com.farmer.entity;
 /* 주문상품 엔티티*/
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 
-public class OrderItem {
+public class OrderItem extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -33,7 +34,4 @@ public class OrderItem {
 
     private int count; //수량
 
-    private LocalDateTime regTime;
-
-    private LocalDateTime updateTime;
 }

@@ -1,5 +1,7 @@
 package com.farmer.entity;
 /* 장바구니 */
+//장바구나와 회원은 일대일로 매핑돼 있으며, 장바구니 엔티티가 회원 엔티티를 참조하는 일대일 단방향 매핑입니다.
+//이렇게 매핑을 하면 장바구니 엔티티를 조회하면서 회원 엔티티의 정보도 동시에 가져올 수 있는 장점이 있습니다.
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-public class Cart {
+public class Cart extends BaseEntity{
 
     @Id
     @Column(name = "cart_id")
