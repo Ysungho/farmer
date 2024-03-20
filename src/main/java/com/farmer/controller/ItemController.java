@@ -1,5 +1,14 @@
 package com.farmer.controller;
 /* 상품 등록 페이지 */
+
+/*
+ 상품 등록 같은 관리자 페이지에서 중요한 것은 데이터의 무결성을 보장해야 한다는 것!!
+
+ 데이터가 의도와 다르게 저장된다거나, 잘못된 값이 저장되지 않도록 validation을 해야 한다.
+
+ 특히 데이터끼리 서로 연관이 있으면 어떤 데이터가 변함에 따라서 다른 데이터도 함께 체크를 해야 하는 경우가 많다.
+ */
+
 import com.farmer.dto.ItemFormDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -126,6 +135,13 @@ public class ItemController {
         model.addAttribute("maxPage", 5);
 
         return "item/itemMng";
+    }
+
+    @GetMapping(value = "/item/{itemId}")
+    public String itemDtl(Model model, @PathVariable("itemId") Long itemId) {
+        ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+        model.addAttribute("item", itemFormDto);
+        return "item/itemDtl";
     }
 
 }
