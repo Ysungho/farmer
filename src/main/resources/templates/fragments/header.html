@@ -26,7 +26,7 @@
         <!--사용자 계정으로 로그인 할 시 장바구니, 구매이력 보여줌-->
         <!--단 sec:authorize="isAuthenticated()" 사용해서 로그인(인증) 시에만 보이는 메뉴로 바꿀 수 있음-->
         <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_USER')" >
-          <a class="nav-link" href="#">장바구니</a>
+          <a class="nav-link" href="/cart">장바구니</a>
         </li>
         <!--사용자 계정으로 로그인 할 시 장바구니, 구매이력 보여줌-->
         <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_USER')">
