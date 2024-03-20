@@ -13,6 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import com.farmer.dto.ItemFormDto;
+import com.farmer.exception.OutOfStockException;
 
 @Entity//Item 클래스를 entity 선언합니다. 또한 @Table 어노테이션을 통해 어떤 테이블과 매핑될지 지정합니다.
 @Table(name="item")//Item 테이블과 매핑되도록 name을 Item으로 지정합니다.
@@ -54,4 +55,12 @@ public class Item extends BaseEntity{
         this.itemSellStatus = itemFormDto.getItemSellStatus();
     }
 
+    public void removeStock(int stockNumber) {
+        int restStock = this.stockNumber - stockNumber;//상품의 재고 수량에서 주문 후 남은 재고 수량을 구합니다.
+        if (restStock < 0) {
+            //상품의 재고가 주문 수량보다 작을 경우 재고 부족 예외를 발생시킵니다.
+            throw new OutOfStockException("상품의 재고가 부족 합니다. (현재 재고 수량: " + this.stockNumber + ")");
+        }
+        this.stockNumber = restStock;//주문 후 남은 재고 수량을 상품의 현재 재고 값으로 할당합니다.
+    }
 }
