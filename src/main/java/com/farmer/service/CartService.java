@@ -1,6 +1,7 @@
 package com.farmer.service;
 /* 장바구니에 상품을 담는 로직*/
 
+import com.farmer.dto.CartDetailDto;
 import com.farmer.dto.CartItemDto;
 import com.farmer.entity.Cart;
 import com.farmer.entity.CartItem;
@@ -68,5 +69,52 @@ public class CartService {
             return cartItem.getId();
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<CartDetailDto> getCartList(String email) {
+
+        List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
+
+        Member member = memberRepository.findByEmail(email);
+        Cart cart = cartRepository.findByMemberId(member.getId());//현재 로그인한 회원의 장바구니 엔티티를 조회합니다
+        if (cart == null) {//장바구니에 상품을 한 번도 안담았을 경우 장바구니 엔티티가 없으므로 빈 리스트를 반환합니다.
+            return cartDetailDtoList;
+        }
+
+        cartDetailDtoList = cartItemRepository.findCartDetailDtoList(cart.getId());//장바구니에 담겨 있는 상품 정보를 조죄합니다.
+        return cartDetailDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    public boolean validateCartItem(Long cartItemId, String email) {
+        //현재 로그인한 회원을 조회합니다.
+        Member curMember = memberRepository.findByEmail(email);
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        //장바구니 상품을 저장한 회원을 조회합니다.
+        Member savedMember = cartItem.getCart().getMember();
+
+        //현재 로그인한 회원과 장바구니 상품을 저장한 회원이 다를 경우  false, 같을 경우 true를 반환합니다.
+        if (!StringUtils.equals(curMember.getEmail(), savedMember.getEmail())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //장바구니 상품의 수량을 업데이트 하는 메소드
+    public void updateCartItemCount(Long cartItemId, int count) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        cartItem.updateCount(count);
+    }
+
+    public void deleteCartItem(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(EntityNotFoundException::new);
+        cartItemRepository.delete(cartItem);
+    }
+
 
 }
