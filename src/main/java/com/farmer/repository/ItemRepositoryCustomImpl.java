@@ -1,6 +1,10 @@
 package com.farmer.repository;
 /* ItemRepositoryCustom 인터페이스를 구현하는 Impl 클래스 */
 /* 클래스명 끝에 Impl을 붙이지 않으면 작동 안함 */
+
+import com.farmer.dto.MainItemDto;
+import com.farmer.dto.QMainItemDto;
+import com.farmer.entity.QItemImg;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -85,4 +89,38 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {//itemRep
         //↓ 조회한 데이터를 Page 클래스의 구현체인 PageImpl 객체로 반환함.
         return new PageImpl<>(content, pageable, total);
     }
+
+    //↓ 검색어가 null이 아니면 상품명에 해당 검색어가 포함되는 상품을 조회하는 조건을 반환
+    private BooleanExpression itemNmLike(String searchQuery) {
+        return StringUtils.isEmpty(searchQuery) ? null : QItem.item.itemNm.like("%" + searchQuery + "%");
+    }
+
+    @Override
+    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+        QItem item = QItem.item;
+        QItemImg itemImg = QItemImg.itemImg;
+
+        QueryResults<MainItemDto> results = queryFactory
+                .select(//↓ QMainItemDto의 생성자에 반환할 값들을 넣어줌. @QueryProjection을 사용하면 DTO로 바로 조회가 가능함.
+                        new QMainItemDto(
+                                item.id,
+                                item.itemNm,
+                                item.itemDetail,
+                                itemImg.imgUrl,
+                                item.price)
+                )
+                .from(itemImg)
+                .join(itemImg.item, item)//itemImg와 item을 내부 조인함
+                .where(itemImg.repimgYn.eq("Y"))//상품 이미지의 경우 대표 상품 이미지만 불러옴
+                .where(itemNmLike(itemSearchDto.getSearchQuery()))
+                .orderBy(item.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<MainItemDto> content = results.getResults();
+        long total = results.getTotal();
+        return new PageImpl<>(content, pageable, total);
+    }
+
 }

@@ -3,6 +3,7 @@ package com.farmer.service;
 
 import com.farmer.dto.ItemFormDto;
 import com.farmer.dto.ItemSearchDto;
+import com.farmer.dto.MainItemDto;
 import com.farmer.entity.Item;
 import com.farmer.entity.ItemImg;
 import com.farmer.repository.ItemImgRepository;
@@ -98,5 +99,10 @@ public class ItemService {
     @Transactional(readOnly = true)
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
         return itemRepository.getAdminItemPage(itemSearchDto, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+        return itemRepository.getMainItemPage(itemSearchDto, pageable);
     }
 }
