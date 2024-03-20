@@ -2,6 +2,7 @@ package com.farmer.controller;
 /* 주문 관련 요청 처리 */
 
 import com.farmer.dto.OrderDto;
+import com.farmer.dto.OrderHistDto;
 import com.farmer.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,22 @@ public class OrderController {
         }
         //결과값으로 생성된 주문 번호와 요청이 성공했다는 HTTP 응답 상태 코드를 반환합니다.
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/orders", "/orders/{page}"})
+    public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model) {
+
+        //한번에 가지고 올 주문의 개수는 4개로 설정했습니다.
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
+
+        //현재 로그인한 회원은 이메일과 페이징 객체를 파라미터로 전달하여 화면에 전달할 주문 목록 데이터를 리턴 값으로 받습니다.
+        Page<OrderHistDto> ordersHistDtoList = orderService.getOrderList(principal.getName(), pageable);
+
+        model.addAttribute("orders", ordersHistDtoList);
+        model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("maxPage", 5);
+
+        return "order/orderHist";
     }
 
 }

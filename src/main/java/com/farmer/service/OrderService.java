@@ -21,6 +21,9 @@ import org.springframework.data.domain.Pageable;
 
 import org.thymeleaf.util.StringUtils;
 
+import com.farmer.dto.OrderHistDto;
+import com.farmer.dto.OrderItemDto;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -31,6 +34,8 @@ public class OrderService {
     private final MemberRepository memberRepository;
 
     private final OrderRepository orderRepository;
+
+    private final ItemImgRepository itemImgRepository;
 
     public Long order(OrderDto orderDto, String email) {
 
@@ -53,5 +58,36 @@ public class OrderService {
 
         return order.getId();
     }
+
+    @Transactional(readOnly = true)
+    public Page<OrderHistDto> getOrderList(String email, Pageable pageable) {
+
+        //유저의 아이디와 페이징 조건을 이용하여 주문 목록을 조회합니다.
+        List<Order> orders = orderRepository.findOrders(email, pageable);
+
+        //유저의 주문 총 개수를 구합니다
+        Long totalCount = orderRepository.countOrder(email);
+
+        List<OrderHistDto> orderHistDtos = new ArrayList<>();
+
+        //주문 리스트를 순회하면서 구매 이력 페이지에 전달할 DTO를 생성합니다.
+        for (Order order : orders) {
+            OrderHistDto orderHistDto = new OrderHistDto(order);
+            List<OrderItem> orderItems = order.getOrderItems();
+            for (OrderItem orderItem : orderItems) {
+                //주문한 상품의 대표 이미지를 조회합니다.
+                ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn
+                        (orderItem.getItem().getId(), "Y");
+                OrderItemDto orderItemDto =
+                        new OrderItemDto(orderItem, itemImg.getImgUrl());
+                orderHistDto.addOrderItemDto(orderItemDto);
+            }
+
+            orderHistDtos.add(orderHistDto);
+        }
+        //페이지 구현 객체를 생성하여 반환합니다.
+        return new PageImpl<OrderHistDto>(orderHistDtos, pageable, totalCount);
+    }
+
 
 }
