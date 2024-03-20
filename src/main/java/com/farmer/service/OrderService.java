@@ -90,4 +90,27 @@ public class OrderService {
     }
 
 
+    @Transactional(readOnly = true)
+    //현재 로그인한 사용자와 주문 데이터를 생성한 사용자가 같은지 검사합니다.
+    //같을 때는 true를 반환하고 그렇지 않으면 false 를 반환합니다.
+    public boolean validateOrder(Long orderId, String email) {
+        Member curMember = memberRepository.findByEmail(email);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(EntityNotFoundException::new);
+        Member savedMember = order.getMember();
+
+        if (!StringUtils.equals(curMember.getEmail(), savedMember.getEmail())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(EntityNotFoundException::new);
+        //주문 취소 상태로 변경하면 변경 감지 기능에 의해서 트랜잭션이 끝날 때 update 쿼리가 실행됩니다.
+        order.cancelOrder();
+    }
+
 }
