@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslPredicateExecutor<Item>{
+public interface ItemRepository extends JpaRepository<Item, Long>, QuerydslPredicateExecutor<Item>, ItemRepositoryCustom{
     //↓ itemNum(상품명)으로 데이터를 조회하기 위해서 By뒤에 필드명인 ItemNm을 메소드의 이름에 붙여줍니다.
     //↓ 엔티티명은 생략이 가능하므로 findItemByItemNm 대신에 findByItemNm으로 메소드명을 만들어 줍니다.
     //↓ 매개 변수로는 검색할 때 사용할 상품명 변수를 넘겨 줍니다.

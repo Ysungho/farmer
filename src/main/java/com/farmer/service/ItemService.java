@@ -2,6 +2,7 @@ package com.farmer.service;
 /* 상품을 등록하는 클래스 */
 
 import com.farmer.dto.ItemFormDto;
+import com.farmer.dto.ItemSearchDto;
 import com.farmer.entity.Item;
 import com.farmer.entity.ItemImg;
 import com.farmer.repository.ItemImgRepository;
@@ -94,5 +95,8 @@ public class ItemService {
 
         return item.getId();
     }
-
+    @Transactional(readOnly = true)
+    public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+        return itemRepository.getAdminItemPage(itemSearchDto, pageable);
+    }
 }
